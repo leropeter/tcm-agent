@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# 环境与密钥（重要：绝不提交真实 key）
+.env
+*.env
+local_settings.py
+config.local.*
+*.key
+*.pem
+
+# 虚拟环境
+.venv/
+venv/
+env/
+
+# IDE / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 数据（大数据集不提交）
+data/raw/
+*.db
+*.sqlite
+*.parquet
