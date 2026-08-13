@@ -89,6 +89,17 @@ if submitted:
             if len(results) > 1:
                 others = "、".join(f"{r['证型']}({r['得分']}分)" for r in results[1:4])
                 st.caption(f"其他可能证型：{others}")
+            # 典籍参考（RAG）
+            try:
+                from src.rag import enrich
+                refs = enrich(all_symptoms, 2)
+            except Exception:
+                refs = []
+            if refs:
+                st.markdown("#### 📚 典籍参考")
+                for r in refs:
+                    st.markdown(f"**〔{r['书']}〕**　{r['片段']}")
+                    st.caption(f"相关度 {r['得分']}")
             # 底部安全提示
             st.markdown('<div class="warn">以上仅供参考，不构成医疗诊断，不适请及时就医。</div>', unsafe_allow_html=True)
 

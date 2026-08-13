@@ -87,6 +87,18 @@ def pretty_report(symptoms):
     if len(results) > 1:
         lines.append("")
         lines.append("（次要可能证型：" + "、".join(f"{r['证型']}({r['得分']}分)" for r in results[1:]) + "）")
+    # 典籍参考（RAG，data/books 缺失时优雅降级）
+    refs = []
+    try:
+        from .rag import enrich
+        refs = enrich(syms, 2)
+    except Exception:
+        refs = []
+    if refs:
+        lines.append("")
+        lines.append("📚 典籍参考：")
+        for r in refs:
+            lines.append(f"  〔{r['书']}〕{r['片段']}")
     lines.append("")
     lines.append("⚠️ 以上仅供参考，不构成医疗诊断，不适请就医。")
     return "\n".join(lines)
