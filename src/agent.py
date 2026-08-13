@@ -15,9 +15,14 @@ _DELIM = re.compile(r"[,，、;\s；]+")
 
 
 def parse_symptoms(text):
-    """把用户输入拆成症状关键词列表（去重、去空白）。"""
+    """把用户输入拆成症状关键词列表（去重、去空白，保持原顺序）。"""
     parts = _DELIM.split(text.strip())
-    return [p for p in parts if p]
+    seen, out = set(), []
+    for p in parts:
+        if p and p not in seen:
+            seen.add(p)
+            out.append(p)
+    return out
 
 
 def _match(symptoms, syndrome):
