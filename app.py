@@ -10,6 +10,7 @@ app.py — TCM Agent Web 界面（Streamlit）
 import streamlit as st
 from src.agent import diagnose, parse_symptoms
 from src.wellness import daily_advice
+from src import acupoints, recipes
 
 st.set_page_config(page_title="TCM Agent 中医养生助手", page_icon="🌿", layout="centered")
 
@@ -121,6 +122,20 @@ if submitted:
         if not results:
             st.warning("暂未找到对应的日常养生条目。建议换个说法（如：失眠/大便不成形/眼干/腰酸），或描述更明确一些。")
         else:
+            # 典籍食疗方（从《自我调养巧治病》提取的具体做法）
+            recipe_hits = recipes.find(all_symptoms)
+            if recipe_hits:
+                st.markdown("#### 📖 典籍食疗方")
+                seen = set()
+                for rc in recipe_hits:
+                    key = rc["名称"]
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    st.markdown(f"**{rc['名称']}**（{rc['病症']}）")
+                    st.markdown(f"🛒 用料：{rc['用料']}")
+                    st.markdown(f"🍳 做法：{rc['做法']}")
+                st.caption("来源：《自我调养巧治病》· 仅供调养参考，用药请遵医嘱")
             for r in results:
                 title = r["条目"]
                 st.markdown(f'<div class="wellness-box"><b>🌿 {title}</b></div>', unsafe_allow_html=True)
@@ -128,6 +143,8 @@ if submitted:
                 for k, v in r.items():
                     if k in ("条目", "命中词"):
                         continue
+                    if k == "穴位":
+                        v = acupoints.expand(v)
                     icon = adv_icons.get(k, "·")
                     st.markdown(f"**{icon} {k}**：{v}")
                 if r.get("tcm_view"):
@@ -158,6 +175,8 @@ if submitted:
             st.markdown('<div class="advice-box"><b>🌿 养生调养建议</b><br>', unsafe_allow_html=True)
             adv_icons = {"饮食": "🍲", "茶饮": "🍵", "穴位": "💆", "生活": "💤"}
             for k, v in top["建议"].items():
+                if k == "穴位":
+                    v = acupoints.expand(v)
                 st.markdown(f"**{adv_icons.get(k,'·')} {k}**：{v}")
             st.markdown("</div>", unsafe_allow_html=True)
             if len(results) > 1:
