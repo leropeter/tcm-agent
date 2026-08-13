@@ -177,7 +177,13 @@ def daily_advice(symptoms):
     for item in DAILY_WELLNESS:
         hits = [kw for kw in item["keywords"] if any(kw in s for s in symptoms)]
         if hits:
-            matched.append({"条目": item["topic"], "命中词": hits, **item["advice"]})
+            matched.append({
+                "条目": item["topic"],
+                "命中词": hits,
+                **item["advice"],
+                "tcm_view": item.get("tcm_view", ""),
+                "see_doctor": item.get("see_doctor", ""),
+            })
     return matched
 
 
