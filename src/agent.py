@@ -8,7 +8,7 @@ agent.py — 辨证引擎（核心逻辑）
 ⚠️ 仅供中医知识学习与养生参考，不构成医疗诊断，不替代专业医师诊疗。
 """
 import re
-from .knowledge import TCM_SYNDROMES
+from .knowledge import TCM_SYNDROMES, SYNDROME_HINTS
 
 # 症状分隔符：中英文逗号、顿号、空格、换行、分号
 _DELIM = re.compile(r"[,，、;\s；]+")
@@ -36,9 +36,10 @@ def _match(symptoms, syndrome):
     return score, hits
 
 
-def diagnose(symptoms):
+def diagnose(symptoms, hints=None):
     """
     symptoms: list[str] 或 str
+    hints: dict[str, bool] 可选，问诊线索（因人制宜），如 {"女性":True,"熬夜":True,"中老年":True}
     返回排序后的结果列表：
     [{证型, 类别, 得分, 命中, 依据, 建议, 配图}, ...]
     """
@@ -48,6 +49,11 @@ def diagnose(symptoms):
     results = []
     for s in TCM_SYNDROMES:
         score, hits = _match(symptoms, s)
+        # 因人制宜：问诊线索加权
+        if hints and hits:
+            for clue, on in hints.items():
+                if on:
+                    score += SYNDROME_HINTS.get(s["id"], {}).get(clue, 0)
         if score > 0 and hits:
             results.append({
                 "证型": s["id"],

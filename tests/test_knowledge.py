@@ -75,5 +75,20 @@ check("空输入返回空", diagnose([]) == [])
 check("症状去重", parse_symptoms("头痛 怕冷，怕冷 无汗") == ["头痛","怕冷","无汗"])
 check("pretty_report 输出证型", "风寒" in pretty_report("头痛 怕冷 流清涕"))
 
+print("== 因人制宜（问诊线索加权）==")
+def top_with_hint(sym, hints):
+    r = diagnose(sym, hints)
+    return r[0]["证型"] if r else None, (r[0]["得分"] if r else 0)
+
+# 同一症状，不同人群得分应变化（加权生效）
+base_score = diagnose(["口苦","烦躁","易怒"])[0]["得分"]
+boosted = diagnose(["口苦","烦躁","易怒"], {"年轻":True,"熬夜":True,"吃辛辣":True})[0]["得分"]
+check("问诊线索使得分上升", boosted > base_score)
+# 女性经期失眠 → 血虚类应靠前（心血虚提升）
+r = diagnose(["失眠","多梦"], {"女性":True,"经期":True})
+check("女性经期失眠→心血虚靠前", r[0]["证型"] == "心血虚")
+# 无问诊信息时行为不变
+check("无hints行为不变", diagnose(["口苦","烦躁","易怒"])[0]["证型"] == "肝郁气滞")
+
 print(f"\n总计: {PASS} 通过 / {FAIL} 失败")
 sys.exit(1 if FAIL else 0)

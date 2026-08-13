@@ -34,6 +34,48 @@ st.warning("⚠️ 仅供中医知识学习与养生参考，不构成医疗诊�
 mode = st.radio("选择你想问的", ["🏠 日常养生", "🌡️ 辨证论治"], horizontal=True,
                 help="日常养生：失眠/舌边齿痕/手脚凉等生活困扰；辨证论治：判断证型与调养")
 
+# ---------- 问诊：因人制宜（中医整体观念） ----------
+with st.expander("👤 先告诉我一些基本情况（因人制宜，会直接影响判断）", expanded=True):
+    c1, c2 = st.columns(2)
+    with c1:
+        gender = st.radio("性别", ["男", "女", "不便透露"], horizontal=True)
+    with c2:
+        age_group = st.radio("年龄段", ["25岁以下", "26-45岁", "46岁以上", "不便透露"], horizontal=True)
+    recent = st.multiselect(
+        "近期情况（可多选，与症状一起看更准）",
+        options=[
+            "熬夜", "睡眠不规律", "压力大/焦虑", "情绪不好/生气", "思虑多",
+            "受凉/吹风", "换季", "吃辛辣/烧烤/火锅", "吃生冷/冰饮", "饮食不规律",
+            "久坐少动", "久用眼", "劳累", "经期/产后", "月经量多", "久咳",
+        ],
+        default=[],
+        help="这些是中医辨证的重要线索，例如同样失眠，熬夜+口苦偏向肝火，经期+多梦偏向血虚。",
+    )
+
+# 把问诊信息转成辨证线索（因人制宜）
+def _build_hints(gender, age_group, recent):
+    hints = {}
+    if gender == "女":
+        hints["女性"] = True
+    elif gender == "男":
+        hints["男性"] = True
+    if age_group == "25岁以下":
+        hints["年轻"] = True
+    elif age_group == "46岁以上":
+        hints["中老年"] = True
+    clue_map = {
+        "熬夜": "熬夜", "睡眠不规律": "熬夜", "压力大/焦虑": "压力大", "情绪不好/生气": "情绪不好",
+        "思虑多": "思虑多", "受凉/吹风": "受凉", "换季": "换季", "吃辛辣/烧烤/火锅": "吃辛辣",
+        "吃生冷/冰饮": "吃生冷", "饮食不规律": "饮食不节", "久坐少动": "久坐", "久用眼": "久视",
+        "劳累": "劳累", "经期/产后": "经期", "月经量多": "月经量多", "久咳": "久咳",
+    }
+    for opt in recent:
+        if opt in clue_map:
+            hints[clue_map[opt]] = True
+    return hints
+
+patient_hints = _build_hints(gender, age_group, recent)
+
 # ---------- 输入区 ----------
 st.markdown("### 📝 你的身体感受")
 with st.form("symptom_form"):
@@ -73,6 +115,9 @@ if submitted:
         # ===== 日常养生模式 =====
         results = daily_advice(all_symptoms)
         st.markdown(f"**你的困扰**：{'、'.join(all_symptoms)}")
+        applied = [k for k, v in patient_hints.items() if v]
+        if applied:
+            st.caption(f"👤 针对你的情况（{'、'.join(applied)}）给下面的调理建议参考")
         if not results:
             st.warning("暂未找到对应的日常养生条目。建议换个说法（如：失眠/大便不成形/眼干/腰酸），或描述更明确一些。")
         else:
@@ -92,8 +137,11 @@ if submitted:
                 st.markdown("---")
     else:
         # ===== 辨证论治模式 =====
-        results = diagnose(all_symptoms)
+        results = diagnose(all_symptoms, patient_hints)
         st.markdown(f"**输入症状**：{'、'.join(all_symptoms)}")
+        applied = [k for k, v in patient_hints.items() if v]
+        if applied:
+            st.caption(f"👤 已结合你的情况：{'、'.join(applied)}（因人制宜加权）")
         if not results:
             st.warning("未找到匹配的证型。这不代表你没有问题，可能是症状描述不在知识库中。请补充更多症状，或咨询专业中医师。")
         else:
