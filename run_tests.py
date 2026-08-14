@@ -7,7 +7,7 @@ import os, subprocess, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TESTS_DIR = os.path.join(HERE, "tests")
-TEST_FILES = ["test_knowledge.py", "test_rag.py", "test_wellness.py", "test_data_lib.py"]
+TEST_FILES = ["test_knowledge.py", "test_rag.py", "test_wellness.py", "test_data_lib.py", "test_rag_semantic.py"]
 
 def main():
     fails = 0
