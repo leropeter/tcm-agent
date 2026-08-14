@@ -182,12 +182,18 @@ if submitted:
             if len(results) > 1:
                 others = "、".join(f"{r['证型']}({r['得分']}分)" for r in results[1:4])
                 st.caption(f"其他可能证型：{others}")
-            # 典籍参考（RAG）
+            # 典籍参考（优先语义RAG，未预构建则降级关键词检索）
+            refs = []
             try:
-                from src.rag import enrich
-                refs = enrich(all_symptoms, 2)
+                from src import rag_semantic, rag
+                sem = rag_semantic.search(all_symptoms, 2)
+                refs = sem if sem else rag.enrich(all_symptoms, 2)
             except Exception:
-                refs = []
+                try:
+                    from src.rag import enrich
+                    refs = enrich(all_symptoms, 2)
+                except Exception:
+                    refs = []
             if refs:
                 st.markdown("#### 📚 典籍参考")
                 for r in refs:

@@ -27,6 +27,8 @@ Thumbs.db
 
 # 数据（大数据集不提交）
 data/raw/
+data/vector_index/
+models/
 *.db
 *.sqlite
 *.parquet

@@ -1,8 +1,10 @@
-# Web 界面（必需，否则只有命令行）
+# 核心运行（必需）：Web 界面 + 辨证 + 关键词检索
 streamlit>=1.30
 
-# --- RAG / 向量检索（可选，未来增强） ---
-# chromadb>=0.4
+# --- 语义检索 RAG（可选增强，未安装时自动降级为关键词检索）---
+# 启用语义检索需安装并预构建索引：
+#   pip install sentence-transformers
+#   python scripts/build_vector_index.py
 # sentence-transformers>=2.2
 
 # --- 数据处理（可选） ---

@@ -1,5 +1,7 @@
 # 🌿 TCM Agent — 中医药辨证调养助手
 
+[![CI](https://github.com/leropeter/tcm-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/leropeter/tcm-agent/actions/workflows/ci.yml)
+
 > 输入你的身体感受（症状），基于中医辨证理论给出**可能的证型** + **调养建议**（饮食/茶饮/穴位/生活作息）+ 配图。
 > 开源项目，MIT 许可证，可自由下载使用。
 
@@ -81,10 +83,11 @@ tcm-agent/
 ```
 
 ## 🧠 技术架构
-- **辨证引擎**：纯 Python 规则 + 加权知识库（可解释、可扩展、离线）
-- **典籍参考（RAG）**：轻量词频检索，21 本经典切块建索引，支持词形变体匹配
+- **辨证引擎**：纯 Python 规则 + 加权知识库（可解释、可扩展、离线）+ 因人制宜问诊线索
+- **典籍参考（RAG）**：关键词检索（默认，零依赖）+ **可选语义检索**（sentence-transformers 向量化，`python scripts/build_vector_index.py` 预构建后启用，未预构建自动降级）
 - **Web 界面**：Streamlit
-- **未来增强**：升级语义向量检索（sentence-transformers + chromadb）、可选 LLM 润色
+- **自动测试**：GitHub Actions CI（`python run_tests.py`）
+- **未来增强**：可选 LLM 润色（DeepSeek API）
 
 ## 🤝 贡献指南
 欢迎提交 Issue 和 Pull Request！尤其是补充更多"症状→证型"知识条目。
