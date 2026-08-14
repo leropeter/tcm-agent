@@ -30,16 +30,13 @@ _meta = None
 
 
 def _load_model():
-    """加载 embedding 模型（本地缓存优先）。失败返回 None。"""
+    """加载 embedding 模型（走 hf-mirror 下载，自动复用缓存）。失败返回 None。"""
     global _model
     if _model is not None:
         return _model
     try:
         from sentence_transformers import SentenceTransformer
-        if os.path.isdir(MODEL_CACHE):
-            _model = SentenceTransformer(MODEL_CACHE)
-        else:
-            _model = SentenceTransformer(MODEL_NAME, cache_folder=MODEL_CACHE)
+        _model = SentenceTransformer(MODEL_NAME, cache_folder=MODEL_CACHE)
         return _model
     except Exception as e:
         print(f"[rag_semantic] 模型加载失败: {e}")
