@@ -10,7 +10,7 @@ app.py — TCM Agent Web 界面（Streamlit）
 import streamlit as st
 from src.agent import diagnose, parse_symptoms
 from src.wellness import daily_advice
-from src import acupoints, recipes
+from src import acupoints, recipes, constitution
 
 st.set_page_config(page_title="TCM Agent 中医养生助手", page_icon="🌿", layout="centered")
 
@@ -172,6 +172,16 @@ if submitted:
                 </div>""",
                 unsafe_allow_html=True,
             )
+            # 体质倾向（因人制宜补充）
+            cons = constitution.assess(top.get("命中", []))
+            if cons:
+                cons_show = cons[:2]
+                st.markdown(f"**🧬 体质倾向**：{'、'.join(c['name'] for c in cons_show)}")
+                for c in cons_show:
+                    st.markdown(
+                        f"<div style='color:#555;margin:2px 0 2px 14px'>· <b>{c['name']}</b>：{c['advice']}</div>",
+                        unsafe_allow_html=True,
+                    )
             st.markdown('<div class="advice-box"><b>🌿 养生调养建议</b><br>', unsafe_allow_html=True)
             adv_icons = {"饮食": "🍲", "茶饮": "🍵", "穴位": "💆", "生活": "💤"}
             for k, v in top["建议"].items():
