@@ -23,9 +23,13 @@
 
 ### 📸 效果展示
 
-![运行效果](assets/screenshot.png)
+<p align="center">
+  <img src="assets/screenshot_1.png" width="32%">
+  <img src="assets/screenshot_2.png" width="32%">
+  <img src="assets/screenshot_3.png" width="32%">
+</p>
 
-> 真实运行界面截图（辨证论治模式）
+> 真实运行界面截图
 
 ---
 
