@@ -20,6 +20,14 @@
 - ✅ **可解释**：每个结论都标注辨证依据与命中症状，不是黑盒
 - ✅ **离线可用**：纯规则引擎 + 轻量词频检索，零第三方依赖，下载即用
 
+### 📸 效果展示
+
+![运行效果](assets/screenshot.png)
+
+> 图为示意（输入"头痛 怕冷 流清涕"→ 辨证 **风寒束表** + 调养建议 + 语义检索的典籍参考）
+
+---
+
 ## 🚀 快速开始
 
 ### 环境准备
@@ -27,7 +35,7 @@
 
 ### 安装
 ```bash
-git clone https://github.com/你的用户名/tcm-agent.git
+git clone https://github.com/leropeter/tcm-agent.git
 cd tcm-agent
 pip install -r requirements.txt
 ```
