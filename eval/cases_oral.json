@@ -1,0 +1,160 @@
+{
+  "meta": {
+    "name": "口语症状 → 证型 评测集 v1",
+    "version": "1.0",
+    "date": "2026-10-31",
+    "cases": 100,
+    "author": "项目作者手工标注",
+    "how_to_build": "每条用例是人手写的口语化主诉（不含知识库术语照抄），期望证型由作者按《中医基础理论》八纲+脏腑辨证人工判定。",
+    "disclaimer": "这不是临床金标准。期望值是作者的判断，用于回归对比，不能作为医学结论引用。",
+    "fields": {
+      "input": "用户原话",
+      "expect": "可接受的证型（数组，命中任一即算对）；null 表示该输入证据不足，系统不应给出证型",
+      "group": "用例分组：core=典型表现 / hard=易混淆对照 / vague=笼统输入"
+    }
+  },
+  "cases": [
+    {"id": 1, "group": "core", "input": "昨天下雨淋了，现在怕冷得厉害，一点汗都没有，鼻涕是清的", "expect": ["风寒束表"]},
+    {"id": 2, "group": "core", "input": "吹了空调以后头疼、鼻子堵、浑身发紧，还打喷嚏", "expect": ["风寒束表", "风寒束肺"]},
+
+    {"id": 3, "group": "core", "input": "嗓子疼得咽口水都疼，发烧，鼻涕是黄的", "expect": ["风热犯表"]},
+    {"id": 4, "group": "core", "input": "这两天发热重，怕风，口渴，痰是黄的", "expect": ["风热犯表", "风热犯肺"]},
+
+    {"id": 5, "group": "core", "input": "夏天在外面晒了一天，头昏沉沉的，胸口闷，想吐，身上发烫但不出汗", "expect": ["暑湿感冒"]},
+    {"id": 6, "group": "core", "input": "三伏天拉肚子，头晕重，嘴里黏，不想喝水", "expect": ["暑湿感冒"]},
+
+    {"id": 7, "group": "core", "input": "老是反复感冒，一感冒就出虚汗，说话都没力气", "expect": ["气虚感冒", "气虚"]},
+    {"id": 8, "group": "core", "input": "稍微吹点风就感冒，平时就爱出汗，容易累", "expect": ["气虚感冒", "气虚", "肺气虚"]},
+
+    {"id": 9, "group": "core", "input": "咳嗽，痰是白稀的，流清鼻涕，怕冷", "expect": ["风寒束肺", "风寒束表"]},
+    {"id": 10, "group": "core", "input": "受凉以后咳得厉害，痰白，胸口发闷", "expect": ["风寒束肺"]},
+
+    {"id": 11, "group": "core", "input": "咳嗽，痰黄稠，嗓子疼", "expect": ["风热犯肺", "痰热壅肺"]},
+    {"id": 12, "group": "core", "input": "咳出来的痰又黄又黏，口干，咽痛", "expect": ["风热犯肺", "痰热壅肺"]},
+
+    {"id": 13, "group": "core", "input": "稍微动一下就气短，容易感冒，说话声音小", "expect": ["肺气虚", "气虚"]},
+    {"id": 14, "group": "core", "input": "总觉着气不够用，一动就喘，还爱出虚汗", "expect": ["肺气虚", "气虚"]},
+
+    {"id": 15, "group": "core", "input": "干咳没有痰，喉咙干，晚上更厉害", "expect": ["肺阴虚"]},
+    {"id": 16, "group": "core", "input": "咳了两个月，痰少，手心热，晚上口干", "expect": ["肺阴虚"]},
+
+    {"id": 17, "group": "core", "input": "咳嗽，痰又黄又稠，胸口痛，发烧", "expect": ["痰热壅肺"]},
+    {"id": 18, "group": "core", "input": "咳黄脓痰，喘不上气，口干", "expect": ["痰热壅肺"]},
+
+    {"id": 19, "group": "core", "input": "心里烦，晚上睡不着，嘴里长溃疡，舌尖红", "expect": ["心火亢盛"]},
+    {"id": 20, "group": "core", "input": "小便黄，心烦，舌头尖破了", "expect": ["心火亢盛"]},
+
+    {"id": 21, "group": "core", "input": "心慌，睡不着，老做梦，脸色发白", "expect": ["心血虚", "血虚"]},
+    {"id": 22, "group": "core", "input": "记性变差，心悸，头晕，嘴唇没血色", "expect": ["心血虚", "血虚"]},
+
+    {"id": 23, "group": "core", "input": "心慌，怕冷，胸口闷，手脚冰凉", "expect": ["心阳虚"]},
+    {"id": 24, "group": "core", "input": "稍微活动就心跳得厉害，还出冷汗，怕冷", "expect": ["心阳虚"]},
+
+    {"id": 25, "group": "core", "input": "胸口像针扎一样疼，嘴唇发紫，舌头发暗", "expect": ["心血瘀阻"]},
+    {"id": 26, "group": "core", "input": "心前区刺痛，痛的地方固定，舌头有瘀斑", "expect": ["心血瘀阻", "气滞血瘀"]},
+
+    {"id": 27, "group": "core", "input": "最近老想叹气，胸口两肋胀，情绪不好就更难受", "expect": ["肝郁气滞"]},
+    {"id": 28, "group": "core", "input": "压力大，爱生气，乳房胀痛，月经前更明显", "expect": ["肝郁气滞"]},
+
+    {"id": 29, "group": "core", "input": "眼睛红，口苦，脾气大，头疼", "expect": ["肝火上炎"]},
+    {"id": 30, "group": "core", "input": "耳鸣像潮水，口苦，烦躁易怒", "expect": ["肝火上炎"]},
+
+    {"id": 31, "group": "core", "input": "眼睛干涩，看东西模糊，指甲脆，月经量少", "expect": ["肝血虚", "血虚"]},
+    {"id": 32, "group": "core", "input": "手脚发麻，头晕，晚上睡不好，脸色淡", "expect": ["肝血虚", "血虚"]},
+
+    {"id": 33, "group": "core", "input": "头晕胀痛，头重脚轻，腰膝酸软，脾气急", "expect": ["肝阳上亢"]},
+    {"id": 34, "group": "core", "input": "血压高，头晕耳鸣，脸红，晚上睡不好", "expect": ["肝阳上亢"]},
+
+    {"id": 35, "group": "core", "input": "吃不下饭，人也没劲，大便稀", "expect": ["脾气虚", "脾胃虚弱"]},
+    {"id": 36, "group": "core", "input": "吃完饭就胀，懒得说话，面色发黄", "expect": ["脾气虚", "脾胃虚弱"]},
+
+    {"id": 37, "group": "core", "input": "大便不成形，身上沉，舌边有齿痕", "expect": ["脾虚湿盛", "痰湿内阻"]},
+    {"id": 38, "group": "core", "input": "总觉得身上黏糊糊的，没胃口，舌苔厚", "expect": ["脾虚湿盛", "痰湿内阻"]},
+
+    {"id": 39, "group": "core", "input": "肚子胀，吃不下，头重得像裹了毛巾，大便溏", "expect": ["寒湿困脾"]},
+    {"id": 40, "group": "core", "input": "舌苔白腻，身上困重，胃口差，怕冷", "expect": ["寒湿困脾", "脾虚湿盛"]},
+
+    {"id": 41, "group": "core", "input": "月经量特别多，颜色淡，身上容易有淤青", "expect": ["脾不统血"]},
+    {"id": 42, "group": "core", "input": "牙龈老出血，皮肤上一块块青紫，人没劲", "expect": ["脾不统血"]},
+
+    {"id": 43, "group": "core", "input": "腰膝酸软，特别怕冷，晚上起夜好几次", "expect": ["肾阳虚"]},
+    {"id": 44, "group": "core", "input": "手脚冰凉，腰冷，没精神", "expect": ["肾阳虚"]},
+
+    {"id": 45, "group": "core", "input": "腰酸，晚上盗汗，手心脚心发热，耳鸣", "expect": ["肾阴虚", "阴虚火旺"]},
+    {"id": 46, "group": "core", "input": "口干咽燥，腰膝酸软，晚上出汗", "expect": ["肾阴虚", "肺阴虚"]},
+
+    {"id": 47, "group": "core", "input": "小便频，尿不尽，腰酸，耳鸣", "expect": ["肾气虚"]},
+    {"id": 48, "group": "core", "input": "夜里老想上厕所，稍微累点就腰酸，气短", "expect": ["肾气虚", "肾阳虚"]},
+
+    {"id": 49, "group": "core", "input": "记性差得厉害，头发早白，腰膝无力，耳鸣", "expect": ["肾精不足", "肝肾亏虚"]},
+    {"id": 50, "group": "core", "input": "孩子长得慢，牙齿出得晚，头发稀", "expect": ["肾精不足", "小儿食积"]},
+
+    {"id": 51, "group": "core", "input": "脸色苍白，头晕，心慌，人特别累", "expect": ["气血两虚", "血虚"]},
+    {"id": 52, "group": "core", "input": "没劲，气短，脸色淡，嘴唇白", "expect": ["气血两虚", "气虚"]},
+
+    {"id": 53, "group": "core", "input": "容易累，说话没力气，一动就出汗", "expect": ["气虚"]},
+    {"id": 54, "group": "core", "input": "整天没精神，懒得说话，稍微干点活就喘", "expect": ["气虚", "肺气虚"]},
+
+    {"id": 55, "group": "core", "input": "脸色淡白，头晕眼花，嘴唇没血色", "expect": ["血虚"]},
+    {"id": 56, "group": "core", "input": "蹲下起来就发黑，心慌，头发干枯", "expect": ["血虚"]},
+
+    {"id": 57, "group": "core", "input": "胸口和两肋胀痛，还刺痛，心情不好就更疼", "expect": ["气滞血瘀", "肝郁气滞"]},
+    {"id": 58, "group": "core", "input": "痛经，血块多，颜色暗，痛起来像针扎", "expect": ["痛经(寒凝血瘀)", "气滞血瘀"]},
+
+    {"id": 59, "group": "core", "input": "人胖，痰多，胸口闷，舌苔厚腻", "expect": ["痰湿内阻"]},
+    {"id": 60, "group": "core", "input": "头晕昏沉，身体沉重，痰多，容易困", "expect": ["痰湿内阻", "脾虚湿盛"]},
+
+    {"id": 61, "group": "core", "input": "晚上盗汗，手心热，脸颊红，心烦", "expect": ["阴虚火旺", "肾阴虚"]},
+    {"id": 62, "group": "core", "input": "口干，五心烦热，睡不着，舌头红少苔", "expect": ["阴虚火旺"]},
+
+    {"id": 63, "group": "core", "input": "来月经肚子疼得厉害，热敷会好一点，血块暗", "expect": ["痛经(寒凝血瘀)"]},
+    {"id": 64, "group": "core", "input": "月经第一天小腹冷痛，怕冷，血块多", "expect": ["痛经(寒凝血瘀)"]},
+
+    {"id": 65, "group": "core", "input": "月经老推迟，量少，心情不好，乳房胀", "expect": ["月经不调(肝郁血虚)", "肝郁气滞"]},
+    {"id": 66, "group": "core", "input": "经期不准，来之前烦躁，脸色淡，头晕", "expect": ["月经不调(肝郁血虚)", "肝血虚"]},
+
+    {"id": 67, "group": "core", "input": "孩子吃多了肚子胀，口气酸臭，大便臭，晚上睡不安稳", "expect": ["小儿食积"]},
+    {"id": 68, "group": "core", "input": "小孩不爱吃饭，肚子鼓，舌苔厚，口气重", "expect": ["小儿食积", "脾胃虚弱"]},
+
+    {"id": 69, "group": "core", "input": "吃一点就饱，饭后胀，大便不成形，人瘦", "expect": ["脾胃虚弱", "脾气虚"]},
+    {"id": 70, "group": "core", "input": "胃口差，吃凉的就难受，容易拉肚子", "expect": ["脾胃虚弱", "脾虚湿盛"]},
+
+    {"id": 71, "group": "core", "input": "口苦口黏，大便黏马桶，舌苔黄腻，脸上长痘", "expect": ["湿热内蕴"]},
+    {"id": 72, "group": "core", "input": "身上痒，小便黄，下身潮湿，口苦", "expect": ["湿热内蕴"]},
+
+    {"id": 73, "group": "core", "input": "怕冷，腰酸，大便稀，吃不下，人没劲", "expect": ["脾肾两虚", "肾阳虚"]},
+    {"id": 74, "group": "core", "input": "早上起来就拉肚子，腰膝冷，胃口差", "expect": ["脾肾两虚", "肾阳虚"]},
+
+    {"id": 75, "group": "core", "input": "头晕得厉害，手抖，走路不稳", "expect": ["肝风内动"]},
+    {"id": 76, "group": "core", "input": "头晕目眩，手脚发麻，说话有点不利索", "expect": ["肝风内动"]},
+
+    {"id": 77, "group": "core", "input": "腰膝酸软，头晕耳鸣，眼睛干，记性差", "expect": ["肝肾亏虚"]},
+    {"id": 78, "group": "core", "input": "上了年纪，腰腿没劲，耳鸣，头发白", "expect": ["肝肾亏虚", "肾精不足"]},
+
+    {"id": 79, "group": "core", "input": "皮肤干痒，掉皮屑，脸色淡，头晕", "expect": ["血虚生风"]},
+    {"id": 80, "group": "core", "input": "身上痒得厉害，晚上更重，皮肤干，指甲脆", "expect": ["血虚生风", "血虚"]},
+
+    {"id": 81, "group": "core", "input": "老是打嗝，反酸，想吐", "expect": ["胃气上逆"]},
+    {"id": 82, "group": "core", "input": "吃完饭往上返酸水，嗳气，胸口烧", "expect": ["胃气上逆"]},
+
+    {"id": 83, "group": "vague", "input": "最近不太舒服", "expect": null},
+    {"id": 84, "group": "vague", "input": "浑身不得劲", "expect": null},
+    {"id": 85, "group": "vague", "input": "状态不好，说不上来哪难受", "expect": null},
+    {"id": 86, "group": "vague", "input": "我是不是身体有问题", "expect": null},
+    {"id": 87, "group": "vague", "input": "感觉身体被掏空", "expect": null},
+    {"id": 88, "group": "vague", "input": "有点不舒服，你帮我看看", "expect": null},
+    {"id": 89, "group": "vague", "input": "最近总觉得哪里不对劲", "expect": null},
+    {"id": 90, "group": "vague", "input": "帮我看下我这是什么毛病", "expect": null},
+
+    {"id": 91, "group": "hard", "input": "怕冷，没有汗，头痛，流清鼻涕", "expect": ["风寒束表"]},
+    {"id": 92, "group": "hard", "input": "发热，嗓子疼，流黄鼻涕", "expect": ["风热犯表"]},
+    {"id": 93, "group": "hard", "input": "干咳，痰少，咽干，晚上咳得厉害", "expect": ["肺阴虚"]},
+    {"id": 94, "group": "hard", "input": "咳嗽，痰黄稠，发热，胸痛", "expect": ["痰热壅肺", "风热犯肺"]},
+    {"id": 95, "group": "hard", "input": "没劲，脸色淡，头晕，心慌", "expect": ["气血两虚", "血虚", "气虚"]},
+    {"id": 96, "group": "hard", "input": "腰酸，怕冷，夜尿多", "expect": ["肾阳虚"]},
+    {"id": 97, "group": "hard", "input": "腰酸，盗汗，手心热", "expect": ["肾阴虚", "阴虚火旺"]},
+    {"id": 98, "group": "hard", "input": "口苦，易怒，眼睛红", "expect": ["肝火上炎"]},
+    {"id": 99, "group": "hard", "input": "头晕胀痛，头重脚轻", "expect": ["肝阳上亢"]},
+    {"id": 100, "group": "hard", "input": "大便稀，没胃口，人没劲", "expect": ["脾气虚", "脾胃虚弱"]}
+  ]
+}

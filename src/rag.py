@@ -15,6 +15,34 @@ from functools import lru_cache
 
 BOOKS_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "books")
 
+# 书籍权重：普通人要的是"能读懂、能照做"的内容。
+# 纯针灸/经络条文虽然术语密度高、词频得分容易冲顶，但对日常调养几乎没有可操作性，
+# 所以按书籍性质加权，而不是让词频独自决定排序。
+BOOK_WEIGHT = {
+    "自我调养巧治病": 2.4,          # 白话 + 具体做法
+    "中医养生学": 2.0,
+    "邹孟城三十年临证经验集": 1.6,  # 医案，可读性强
+    "中药基本理论知识": 1.6,
+    "中医伤科按摩学": 1.3,
+    "中医眼科备读": 1.2,
+    "千金要方": 1.2,                # 方书/食疗
+    "千金翼方": 1.1,
+    "本草纲目": 1.1,
+    "肘后备急方": 1.0,
+    "伤寒论": 1.1,
+    "金匮要略": 1.1,
+    "神农本草经": 0.9,
+    "黄帝内经_素问": 0.8,           # 理论性强，直接可用性低
+    "黄帝内经_灵枢": 0.8,
+    "黄帝八十一难经": 0.7,
+    "针灸甲乙经": 0.3,              # 针刺条文，普通人用不上
+    "腧穴": 0.5,
+    "穴位": 0.5,
+    "经络": 0.4,
+    "_十二经脉_动画图": 0.4,
+}
+_DEFAULT_WEIGHT = 1.0
+
 # 去掉 markdown 标记
 _MD_STRIP = re.compile(r"[#>*`\-|]")
 # 连续空白 → 单空格
@@ -102,9 +130,19 @@ def search(query_words, top_k=3):
                     sub = w[i:i+2]
                     score += text.count(sub) * len(sub) * 0.5  # 子串打折降噪
         if score > 0:
+            score *= BOOK_WEIGHT.get(book, _DEFAULT_WEIGHT)
             scored.append({"书": book, "片段": text, "得分": round(score, 1)})
     scored.sort(key=lambda x: x["得分"], reverse=True)
-    return scored[:top_k]
+    # 每本书最多 1 条：避免同一本书（尤其条文密集者）霸占全部结果
+    picked, seen = [], set()
+    for h in scored:
+        if h["书"] in seen:
+            continue
+        seen.add(h["书"])
+        picked.append(h)
+        if len(picked) >= top_k:
+            break
+    return picked
 
 def enrich(query_words, top_k=3):
     """给辨证结果附上典籍参考片段（人类可读）。"""
