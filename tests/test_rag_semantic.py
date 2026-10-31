@@ -21,10 +21,15 @@ try:
 finally:
     rag_semantic.INDEX_DIR = _orig
 
-print("== 语义检索（本地有索引时才验证）==")
+print("== 语义检索（本地有索引+有依赖时才验证）==")
 vec = os.path.join(rag_semantic.INDEX_DIR, "vectors.npy")
 meta = os.path.join(rag_semantic.INDEX_DIR, "meta.json")
-if os.path.exists(vec) and os.path.exists(meta):
+try:
+    import sentence_transformers  # noqa: F401
+    _dep_ok = True
+except Exception:
+    _dep_ok = False
+if os.path.exists(vec) and os.path.exists(meta) and _dep_ok:
     r = rag_semantic.search(["肾虚 腰酸 夜尿多"], 3)
     ck("语义检索返回非空", bool(r))
     ck("结果含 书/片段/得分", bool(r) and all(all(k in x for k in ["书","片段","得分"]) for x in r))

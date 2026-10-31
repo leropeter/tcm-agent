@@ -11,6 +11,10 @@ os.chdir(ROOT)
 
 from streamlit.testing.v1 import AppTest
 
+# streamlit >= 1.4x 起，from_file 的相对路径按「调用者所在目录」解析（旧版按 CWD），
+# 这里一律用绝对路径，避免本地过、CI 挂。
+APP_PATH = os.path.join(ROOT, "app.py")
+
 PASS = FAIL = 0
 
 
@@ -35,7 +39,7 @@ def click_go(at):
 
 
 def ask(text, mode="🌡️ 辨证论治", age=None, recent=None):
-    at = AppTest.from_file("app.py", default_timeout=180)
+    at = AppTest.from_file(APP_PATH, default_timeout=180)
     at.run()
     at.radio(key="ui_mode").set_value(mode).run()   # 默认是日常养生，必须显式设置
     if age:
@@ -48,7 +52,7 @@ def ask(text, mode="🌡️ 辨证论治", age=None, recent=None):
 
 
 print("== 冷启动与布局 ==")
-at = AppTest.from_file("app.py", default_timeout=180)
+at = AppTest.from_file(APP_PATH, default_timeout=180)
 at.run()
 check("无异常", not at.exception, str(at.exception))
 md = all_md(at)
@@ -127,7 +131,7 @@ check("养生未命中不留死路", any("最可能是" in i.value for i in at7.
       or "通用建议" in all_md(at7) or len(all_md(at7)) > 100, all_md(at7)[:80])
 
 print("== 示例按钮能填充并出结果 ==")
-at8 = AppTest.from_file("app.py", default_timeout=180)
+at8 = AppTest.from_file(APP_PATH, default_timeout=180)
 at8.run()
 _ex = [b for b in at8.button if (b.key or "").startswith("ex_")]
 check("有示例按钮", len(_ex) == 4)
