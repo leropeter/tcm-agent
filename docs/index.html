@@ -1,66 +1,66 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>涓尰杈ㄨ瘉璋冨吇鍔╂墜 路 璇翠汉璇濆氨鑳界敤</title>
-<meta name="description" content="鐢ㄦ棩甯稿彛璇弿杩拌韩浣撲笉閫傦紝寰楀埌鍙兘鐨勮瘉鍨嬨€佽鲸璇佷緷鎹拰鍙墽琛岀殑璋冨吇寤鸿銆?1 璇佸瀷 / 61 棣栫粡鍏告柟 / 250 渚嬪尰妗?/ 21 閮ㄥ吀绫嶏紝绾墠绔绾胯繍琛屻€?>
-<link rel="stylesheet" href="style.css?v=5">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>馃尶</text></svg>">
+<title>中医辨证调养助手 · 说人话就能用</title>
+<meta name="description" content="用日常口语描述身体不适，得到可能的证型、辨证依据和可执行的调养建议。41 种证型 / 61 首经典方 / 38 个穴位 / 14 道食疗方。">
+<link rel="stylesheet" href="style.css?v=6">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
 </head>
 <body>
 <div class="bg-grid" aria-hidden="true"></div>
 
 <header class="hero">
-  <h1>馃尶 涓尰杈ㄨ瘉璋冨吇鍔╂墜</h1>
-  <p class="sub">鐢ㄨ韩浣撴劅鍙楄璇濓紝缁欎綘涓€涓彲鎵ц鐨勮皟鍏绘柟鍚?/p>
-  <p class="meta"><b>41</b> 绉嶈瘉鍨?路 <b>61</b> 棣栫粡鍏告柟 路 <b>38</b> 涓┐浣?路 <b>14</b> 閬撻鐤楁柟</p>
+  <h1>🌿 中医辨证调养助手</h1>
+  <p class="sub">用身体感受说话，给你一个可执行的调养方向</p>
+  <p class="meta"><b>41</b> 种证型 · <b>61</b> 首经典方 · <b>38</b> 个穴位 · <b>14</b> 道食疗方</p>
 </header>
 
 <main>
   <section class="input-card">
-    <label for="symptoms">浣犵殑韬綋鎰熷彈</label>
+    <label for="symptoms">你的身体感受</label>
     <textarea id="symptoms" rows="3"
-      placeholder="渚嬶細鏈€杩戞€荤潯涓嶇潃锛岀櫧澶╂病鍔诧紝澶т究涔熶笉鎴愬舰"></textarea>
+      placeholder="例：最近总睡不着，白天没劲，大便也不成形"></textarea>
 
     <div class="examples">
-      <span>璇曡瘯锛?/span>
-      <button class="ex" data-text="澶辩湢 澶氭ⅵ 蹇冪儲 鑸屽皷绾?>澶辩湢澶氭ⅵ</button>
-      <button class="ex" data-text="鍚冧笉涓嬮キ 浜轰篃娌″姴 澶т究绋€">鑴捐櫄涔忓姏</button>
-      <button class="ex" data-text="鎬曞喎 娌℃睏 澶寸棝 娴佹竻娑?>椋庡瘨鎰熷啋</button>
-      <button class="ex" data-text="鎯呯华涓嶅ソ 鐖卞徆姘?涓よ倠鑳€">鑲濋儊姘旀粸</button>
+      <span>试试：</span>
+      <button class="ex" data-text="失眠 多梦 心烦 舌尖红">失眠多梦</button>
+      <button class="ex" data-text="吃不下饭 人也没劲 大便稀">脾虚乏力</button>
+      <button class="ex" data-text="怕冷 没汗 头痛 流清涕">风寒感冒</button>
+      <button class="ex" data-text="情绪不好 爱叹气 两肋胀">肝郁气滞</button>
     </div>
 
     <div class="chips">
-      <span class="chips-label">鎴栫洿鎺ョ偣閫夛細</span>
+      <span class="chips-label">或直接点选：</span>
       <div id="chips" class="chips-list"></div>
     </div>
 
-    <button id="go" class="go">寮€濮嬪垎鏋?/button>
+    <button id="go" class="go">开始分析</button>
   </section>
 
   <section id="result" class="result" hidden></section>
 </main>
 
 <footer>
-  <p><b>鏈伐鍏蜂粎鐢ㄤ簬涓尰鐭ヨ瘑瀛︿範涓庡吇鐢熷弬鑰冿紝涓嶆瀯鎴愬尰鐤楄瘖鏂紝涓嶆浛浠ｄ笓涓氬尰甯堣瘖鐤椼€?/b></p>
-  <p>鏈夎兏鐥涖€侀粦渚垮憰琛€銆佺獊鍙戝墽鐑堝ご鐥涖€佸崟渚ц偄浣撻夯鏈ㄧ瓑鎯呭喌锛岃鐩存帴灏卞尰銆?/p>
+  <p><b>本工具仅用于中医知识学习与养生参考，不构成医疗诊断，不替代专业医师诊疗。</b></p>
+  <p>有胸痛、黑便呕血、突发剧烈头痛、单侧肢体麻木等情况，请直接就医。</p>
   <p class="tiny">
-    <a href="https://github.com/leropeter/tcm-agent">GitHub 婧愮爜</a> 路
-    <a href="EVALUATION.md">璇勬祴涓庡眬闄?/a> 路
-    鏁版嵁锛歍CMEval-SDT 鍏紑鏁版嵁闆?+ 鍏湁棰嗗煙鍙ょ睄
+    <a href="https://github.com/leropeter/tcm-agent">GitHub 源码</a> ·
+    <a href="EVALUATION.md">评测与局限</a> ·
+    数据：TCMEval-SDT 公开数据集 + 公有领域古籍
   </p>
 </footer>
 
 <div class="modal" id="modal" hidden>
   <div class="modal-back" data-close></div>
   <div class="modal-panel" role="dialog" aria-modal="true">
-    <button class="modal-x" id="modal-x" aria-label="鍏抽棴">脳</button>
+    <button class="modal-x" id="modal-x" aria-label="关闭">×</button>
     <div class="modal-content" id="modal-content"></div>
   </div>
 </div>
 
-<script src="tcm-engine.js?v=5"></script>
-<script src="app.js?v=5"></script>
+<script src="tcm-engine.js?v=6"></script>
+<script src="app.js?v=6"></script>
 </body>
 </html>
