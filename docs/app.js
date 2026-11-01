@@ -166,7 +166,7 @@ function initPointerGlow() {
 }
 
 async function boot() {
-  const res = await fetch('data.json');
+  const res = await fetch('data.json?v=3');
   DATA = await res.json();
   E.setData(DATA);
 
