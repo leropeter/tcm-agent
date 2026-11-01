@@ -145,12 +145,33 @@ function countUp(el, to, dur) {
   requestAnimationFrame(tick);
 }
 
+/* 鼠标跟随的柔光（仅精确指针设备，触屏跳过） */
+function initPointerGlow() {
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+  document.addEventListener('mousemove', (e) => {
+    const main = e.target.closest && e.target.closest('.card.main');
+    if (main) {
+      const r = main.getBoundingClientRect();
+      main.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+      main.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+    }
+    const ic = e.target.closest && e.target.closest('.input-card');
+    if (ic) {
+      const r = ic.getBoundingClientRect();
+      ic.style.setProperty('--spot-x', ((e.clientX - r.left) / r.width * 100) + '%');
+      ic.style.setProperty('--spot-y', ((e.clientY - r.top) / r.height * 100) + '%');
+    }
+  }, { passive: true });
+}
+
 async function boot() {
   const res = await fetch('data.json');
   DATA = await res.json();
   E.setData(DATA);
 
   renderChips();
+  initPointerGlow();
 
   $('#go').onclick = () => {
     const text = $('#symptoms').value.trim();

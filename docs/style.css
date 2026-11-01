@@ -87,7 +87,72 @@ body::after {
   to   { transform: translate3d(-6vw, -4vh, 0) scale(.96); }
 }
 
-/* 通用进场 */
+/* 背景：细网格（中间亮、四周淡出），叠在光晕之上 */
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(120, 108, 78, .075) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(120, 108, 78, .075) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(ellipse 75% 60% at 50% 32%, #000 25%, transparent 78%);
+  mask-image: radial-gradient(ellipse 75% 60% at 50% 32%, #000 25%, transparent 78%);
+}
+@media (prefers-color-scheme: dark) {
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgba(220, 215, 190, .055) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(220, 215, 190, .055) 1px, transparent 1px);
+  }
+}
+
+/* 鼠标跟随光斑（桌面端） */
+.card.main { --mx: 50%; --my: 0%; }
+.card.main::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(520px circle at var(--mx) var(--my),
+    rgba(176, 138, 79, .16), rgba(63, 107, 73, .07) 32%, transparent 62%);
+  opacity: 0;
+  transition: opacity .35s var(--ease);
+  pointer-events: none;
+}
+.card.main:hover::after { opacity: 1; }
+
+/* 标题：缓慢流动的金属渐变 */
+.hero h1 {
+  background: linear-gradient(100deg, var(--green) 0%, var(--green-2) 26%, var(--gold) 50%, var(--green-2) 74%, var(--green) 100%);
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: fadeUp .8s var(--ease) both, textShift 12s linear infinite;
+}
+@keyframes textShift {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+/* 首屏卡片：跟随鼠标的柔光（仅桌面） */
+@media (hover: hover) and (pointer: fine) {
+  .input-card { --spot-x: 50%; --spot-y: 0%; }
+  .input-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(420px circle at var(--spot-x) var(--spot-y),
+      rgba(176, 138, 79, .10), transparent 55%);
+    opacity: 0;
+    transition: opacity .4s;
+    pointer-events: none;
+  }
+  .input-card:hover::before { opacity: 1; }
+}
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(18px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -142,7 +207,7 @@ body::after {
   letter-spacing: 3px;
   color: var(--green);
   font-weight: 800;
-  animation: fadeUp .8s var(--ease) both;
+  animation: fadeUp .8s var(--ease) both, textShift 12s linear infinite;
 }
 .hero .sub {
   margin: 0 0 8px;
