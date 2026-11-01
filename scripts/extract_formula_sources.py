@@ -77,14 +77,27 @@ def main():
         name = f["名"]
         hits = []
         for bname, text in books:
-            for m in re.finditer(re.escape(name), text):
-                start = max(0, m.start() - 80)
-                end = min(len(text), m.start() + 420)
+            # 优先找 "XX方"（方剂条目标题），没有再退回方名本身
+            positions = [m.start() for m in re.finditer(re.escape(name + "方"), text)]
+            if not positions:
+                positions = [m.start() for m in re.finditer(re.escape(name), text)]
+
+            for pos in positions:
+                # 方名前面紧邻汉字 → 多半是更长方名的一部分（厚朴麻黄汤里含"麻黄汤"）
+                if pos > 0 and "\u4e00" <= text[pos - 1] <= "\u9fff":
+                    continue
+                start = max(0, pos - 10)
+                # 回退到最近的句号，避免从半句开始
+                dot = text.rfind("。", max(0, start - 60), start)
+                if dot > 0:
+                    start = dot + 1
+                end = min(len(text), pos + 460)
                 seg = clean(text[start:end])
                 if len(seg) < 60:
                     continue
                 # 方名必须出现在段落前部——否则只是"提到"，不是本方的条文
-                if m.start() - start > 130:
+                idx = seg.find(name)
+                if idx < 0 or idx > 40:
                     continue
                 # 必须是"方剂条文"：有制法词 + 至少 3 处剂量/计量词，且不像韵文歌诀
                 if not MAKE.search(seg):
