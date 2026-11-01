@@ -552,6 +552,213 @@ footer a:hover { border-bottom-color: var(--green); }
   body::before, body::after { filter: blur(50px); opacity: .38; }
 }
 
+/* 证型图标：大号 emoji，缓慢浮动 */
+.sx-icon {
+  font-size: 34px;
+  line-height: 1;
+  filter: drop-shadow(0 4px 10px rgba(120, 100, 60, .22));
+  animation: floatY 5.5s ease-in-out infinite;
+  transform-origin: center;
+}
+@keyframes floatY {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-5px) rotate(2deg); }
+}
+
+/* 可点击的方剂卡 / 其他证型 ---------------- */
+button.formula, button.other-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+button.formula {
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+button.formula:last-child { margin-bottom: 0; }
+button.formula:hover { border-color: var(--green-2); }
+.f-go {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--green);
+  opacity: .7;
+  transition: opacity .2s, transform .2s;
+}
+button.formula:hover .f-go { opacity: 1; transform: translateX(3px); }
+
+.others { list-style: none; padding: 0; margin: 0; }
+.others li { border-bottom: 1px dashed var(--line-2); }
+.others li:last-child { border-bottom: 0; }
+button.other-btn {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 12px 8px;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  transition: background .2s var(--ease), padding-left .2s var(--ease);
+}
+button.other-btn:hover { background: var(--green-soft); padding-left: 14px; }
+.o-go { margin-left: 6px; color: var(--green); opacity: .6; font-size: 16px; }
+button.other-btn:hover .o-go { opacity: 1; }
+
+/* ---------------- 弹层 ---------------- */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+.modal[hidden] { display: none; }
+.modal-back {
+  position: absolute;
+  inset: 0;
+  background: rgba(30, 28, 20, .42);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity .24s var(--ease);
+}
+.modal.on .modal-back { opacity: 1; }
+
+.modal-panel {
+  position: relative;
+  width: min(640px, 100%);
+  max-height: min(86vh, 900px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 26px 26px 22px;
+  box-shadow: 0 24px 70px rgba(40, 34, 20, .28);
+  opacity: 0;
+  transform: translateY(16px) scale(.985);
+  transition: opacity .26s var(--ease), transform .26s var(--ease);
+}
+.modal.on .modal-panel { opacity: 1; transform: none; }
+
+.modal-x {
+  position: absolute;
+  top: 12px; right: 14px;
+  width: 34px; height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--line-2);
+  color: var(--ink-soft);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .2s, transform .2s;
+}
+.modal-x:hover { background: var(--green-soft); color: var(--green); transform: rotate(90deg); }
+
+.md-head { margin-bottom: 14px; padding-right: 40px; }
+.md-head h2 { margin: 0 0 4px; font-size: 23px; letter-spacing: 1px; color: var(--green); }
+.md-src { font-size: 13px; color: var(--muted); }
+
+.md-row { margin: 8px 0; font-size: 14.5px; color: var(--ink-soft); }
+.md-row b {
+  display: inline-block; min-width: 52px; color: var(--brown);
+  font-size: 13px; margin-right: 8px;
+}
+
+.md-block {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--line-2);
+}
+.md-block h3 {
+  margin: 0 0 12px;
+  font-size: 15px;
+  color: var(--green);
+  padding-left: 10px;
+  position: relative;
+}
+.md-block h3::before {
+  content: ""; position: absolute; left: 0; top: 3px; bottom: 3px;
+  width: 3px; border-radius: 2px;
+  background: linear-gradient(180deg, var(--gold), var(--green));
+}
+
+.md-steps { margin: 0; padding-left: 20px; }
+.md-steps li { margin: 7px 0; font-size: 14.5px; line-height: 1.7; }
+
+.md-advice { margin: 0; display: grid; grid-template-columns: 60px 1fr; gap: 8px 12px; }
+.md-advice dt { color: var(--brown); font-weight: 600; font-size: 13.5px; }
+.md-advice dd { margin: 0; font-size: 14.5px; }
+
+.md-tip { margin: 12px 0 0; font-size: 12.5px; color: var(--muted); line-height: 1.65; }
+.md-tip b { color: var(--red); }
+
+.md-quote {
+  background: var(--paper-2);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+}
+.q-book { font-size: 12px; color: var(--gold); margin-bottom: 4px; letter-spacing: .5px; }
+.md-quote p { margin: 0; font-size: 13.5px; line-height: 1.75; color: var(--ink-soft); }
+
+.md-warn { background: #fdf3ee; border-radius: 10px; padding: 12px 14px; }
+.md-warn p { margin: 0; font-size: 13.5px; color: var(--red); }
+@media (prefers-color-scheme: dark) {
+  .md-warn { background: #33241f; }
+  .modal-back { background: rgba(0, 0, 0, .62); }
+}
+
+.md-formula-list { display: grid; gap: 8px; }
+.md-formula-btn {
+  display: flex; flex-direction: column; gap: 3px;
+  text-align: left; width: 100%;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  transition: border-color .2s, transform .2s;
+}
+.md-formula-btn:hover { border-color: var(--green-2); transform: translateX(3px); }
+.md-formula-btn b { font-size: 15px; }
+.md-formula-btn span { font-size: 12.5px; color: var(--muted); }
+
+.md-foot {
+  margin: 20px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-2);
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.md-foot b { color: var(--red); }
+
+/* 移动端 */
+@media (max-width: 520px) {
+  .modal { padding: 10px; align-items: flex-end; }
+  .modal-panel {
+    width: 100%;
+    max-height: 88vh;
+    border-radius: 18px 18px 12px 12px;
+    padding: 22px 18px 18px;
+  }
+  .md-head h2 { font-size: 20px; }
+}
+
 /* 尊重系统的"减少动态效果"设置 */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

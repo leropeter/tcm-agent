@@ -3,6 +3,7 @@
 
 const E = window.TCMEngine;
 let DATA = null;
+let SOURCES = {};
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -15,7 +16,135 @@ function formulasFor(id) {
   return (DATA.formulas || []).filter(f => (f['证型'] || []).includes(id));
 }
 
+function syndromeById(id) {
+  return (DATA.syndromes || []).find(s => s.id === id);
+}
+
 const LEVEL_CLASS = { '较高': 'lv-high', '中等': 'lv-mid', '较低': 'lv-low', '无': 'lv-none' };
+
+/* ---------------- 剂型 → 通用制作流程（不涉及剂量） ---------------- */
+
+function prepMethod(name) {
+  if (/丸/.test(name)) {
+    return {
+      kind: '丸剂',
+      steps: [
+        '药材按方研为细末，混匀。',
+        '按医嘱以蜜、水或米糊为赋形剂制丸（本方原法见出处）。',
+        '按医嘱用量，温水送服；补益类多饭前，消导类多饭后。',
+      ],
+      tip: '丸剂起效缓，适合久服调养；急症一般不用丸。',
+    };
+  }
+  if (/散/.test(name)) {
+    return {
+      kind: '散剂',
+      steps: [
+        '药材研为细末，过筛混匀，密封防潮。',
+        '按医嘱用量，温水、姜汤或米汤送服。',
+        '现多可装入胶囊或冲服，风味较易接受。',
+      ],
+      tip: '散剂省药材、起效快，但挥发性药材（如薄荷）不宜久存。',
+    };
+  }
+  return {
+    kind: '汤剂',
+    steps: [
+      '药材冷水浸泡 30 分钟，水面没过药材约 2–3 厘米。',
+      '武火煮沸后转文火，头煎 25–30 分钟，滤出药液。',
+      '原药渣再加水，二煎 20 分钟，滤出。',
+      '两次药液合并，分早晚两次温服。',
+    ],
+    tip: '解表药宜武火快煎（15 分钟左右），滋补药宜文火久煎（40 分钟以上）；含附子、乌头类必须先煎。',
+  };
+}
+
+/* ---------------- 弹层 ---------------- */
+
+function openModal(html) {
+  $('#modal-content').innerHTML = html;
+  const m = $('#modal');
+  m.hidden = false;
+  requestAnimationFrame(() => m.classList.add('on'));
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  const m = $('#modal');
+  m.classList.remove('on');
+  document.body.style.overflow = '';
+  setTimeout(() => { m.hidden = true; }, 220);
+}
+
+function formulaDetailHTML(f) {
+  const src = SOURCES[f['名']] || [];
+  const prep = prepMethod(f['名']);
+
+  let html = `
+    <div class="md-head">
+      <h2>${esc(f['名'])}</h2>
+      <div class="md-src">${esc(f['出处'] || '出处未载')}</div>
+    </div>`;
+
+  if (f['功用']) html += `<p class="md-row"><b>功用</b>${esc(f['功用'])}</p>`;
+  if (f['主治']) html += `<p class="md-row"><b>主治</b>${esc(f['主治'])}</p>`;
+  if (f['组成']) html += `<p class="md-row"><b>组成</b>${esc(f['组成'])}</p>`;
+
+  html += `<div class="md-block">
+      <h3>怎么做（${prep.kind}通用法）</h3>
+      <ol class="md-steps">${prep.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
+      <p class="md-tip">💡 ${esc(prep.tip)}</p>
+    </div>`;
+
+  if (src.length) {
+    html += `<div class="md-block">
+      <h3>典籍原文</h3>
+      ${src.map(s => `<div class="md-quote"><div class="q-book">《${esc(s.book.replace('.md', ''))}》</div>
+        <p>${esc(s.text)}</p></div>`).join('')}
+      <p class="md-tip">以上为检索命中的古籍段落原文，可能包含相邻条文；古制计量单位（两、升、枚）与今不同，<b>不可直接照搬</b>。</p>
+    </div>`;
+  }
+
+  if (f['注意']) {
+    html += `<div class="md-block md-warn"><h3>注意</h3><p>${esc(f['注意'])}</p></div>`;
+  }
+
+  html += `<p class="md-foot">本页只给组成与通用制法，<b>不给剂量</b>——剂量错一点就是事故，请由医师按你的体质和病情定。</p>`;
+  return html;
+}
+
+function syndromeDetailHTML(id) {
+  const s = syndromeById(id);
+  if (!s) return '<p>没有这个证型</p>';
+  const fs = formulasFor(id);
+  const adv = s.advice || {};
+
+  let html = `
+    <div class="md-head">
+      <h2>${esc(s.id)}</h2>
+      <div class="md-src">${esc(s.category)}</div>
+    </div>
+    <p class="md-row"><b>辨证依据</b>${esc(s.evidence)}</p>`;
+
+  html += `<div class="md-block"><h3>怎么调</h3><dl class="md-advice">`;
+  for (const [k, v] of Object.entries(adv)) {
+    html += `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`;
+  }
+  html += `</dl></div>`;
+
+  if (fs.length) {
+    html += `<div class="md-block"><h3>参考方剂</h3><div class="md-formula-list">`;
+    for (const f of fs) {
+      html += `<button class="md-formula-btn" data-fname="${esc(f['名'])}">
+        <b>${esc(f['名'])}</b><span>${esc(f['功用'] || '')}</span>
+      </button>`;
+    }
+    html += `</div><p class="md-tip">点方名看组成、怎么做、典籍原文。</p></div>`;
+  }
+  return html;
+}
+
+/* ---------------- 结果渲染 ---------------- */
 
 function renderChips() {
   const box = $('#chips');
@@ -55,12 +184,13 @@ function render(analysis) {
   const a = E.assess(results);
   const top = results[0];
   const src = top.src || {};
-  const others = results.slice(1, 4);
+  const others = results.slice(1, 5);
   const words = { '较高': '最可能', '中等': '可能是', '较低': '暂偏向' }[a.level] || '可能是';
 
   let html = `
     <div class="card main">
       <div class="verdict-head">
+        <span class="sx-icon" aria-hidden="true">${esc(src.image || '🌿')}</span>
         <span class="badge ${LEVEL_CLASS[a.level]}">把握${a.level}</span>
         <h2>${words} <span class="sx">${esc(top.id)}</span></h2>
         <span class="cat">${esc(top.category)}</span>
@@ -86,24 +216,27 @@ function render(analysis) {
 
   const fs = formulasFor(top.id);
   if (fs.length) {
-    html += `<div class="card"><h3>参考方剂<span class="sub2">只给组成，不给剂量——剂量错一点就是事故</span></h3>`;
+    html += `<div class="card"><h3>参考方剂<span class="sub2">点开看组成、做法、典籍原文</span></h3>`;
     for (const f of fs) {
-      html += `<div class="formula">
-        <div class="f-head"><b>${esc(f['名'])}</b><span class="f-src">${esc(f['出处'] || '')}</span></div>
-        <div class="f-row"><span>组成</span>${esc(f['组成'] || '')}</div>
+      html += `<button class="formula" data-fname="${esc(f['名'])}">
+        <div class="f-head"><b>${esc(f['名'])}</b><span class="f-src">${esc(f['出处'] || '')}</span>
+          <span class="f-go">点击展开 ›</span></div>
         <div class="f-row"><span>功用</span>${esc(f['功用'] || '')}</div>
-        <div class="f-row"><span>主治</span>${esc(f['主治'] || '')}</div>
-        ${f['注意'] ? `<div class="f-warn">⚠️ ${esc(f['注意'])}</div>` : ''}
-      </div>`;
+        <div class="f-row"><span>组成</span>${esc(f['组成'] || '')}</div>
+      </button>`;
     }
     html += `</div>`;
   }
 
   if (others.length) {
-    html += `<div class="card"><h3>也可能是</h3><ul class="others">`;
+    html += `<div class="card"><h3>也可能是<span class="sub2">点开看这个证型怎么调</span></h3><ul class="others">`;
     for (const o of others) {
-      html += `<li><b>${esc(o.id)}</b> <span class="o-score">${o.score} 分</span>
-        <span class="o-cat">${esc(o.category)}</span></li>`;
+      html += `<li><button class="other-btn" data-sid="${esc(o.id)}">
+        <b>${esc(o.id)}</b>
+        <span class="o-score">${o.score} 分</span>
+        <span class="o-cat">${esc(o.category)}</span>
+        <span class="o-go">›</span>
+      </button></li>`;
     }
     html += `</ul></div>`;
   }
@@ -118,7 +251,6 @@ function render(analysis) {
   box.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-/* 进场动效：卡片错峰、进度条从 0 展开、分数滚动 */
 function playAnimations(box) {
   const cards = box.querySelectorAll('.card');
   cards.forEach((el, i) => { el.style.animationDelay = (i * 75) + 'ms'; });
@@ -145,10 +277,9 @@ function countUp(el, to, dur) {
   requestAnimationFrame(tick);
 }
 
-/* 鼠标跟随的柔光（仅精确指针设备，触屏跳过） */
+/* 鼠标跟随的柔光（仅精确指针设备） */
 function initPointerGlow() {
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-
   document.addEventListener('mousemove', (e) => {
     const main = e.target.closest && e.target.closest('.card.main');
     if (main) {
@@ -165,13 +296,41 @@ function initPointerGlow() {
   }, { passive: true });
 }
 
+/* 全局点击：方剂 / 其他证型 / 关闭弹层 */
+function initDelegates() {
+  document.addEventListener('click', (e) => {
+    const fBtn = e.target.closest('[data-fname]');
+    if (fBtn) {
+      const name = fBtn.dataset.fname;
+      const f = (DATA.formulas || []).find(x => x['名'] === name);
+      if (f) openModal(formulaDetailHTML(f));
+      return;
+    }
+    const sBtn = e.target.closest('[data-sid]');
+    if (sBtn) {
+      openModal(syndromeDetailHTML(sBtn.dataset.sid));
+      return;
+    }
+    if (e.target.closest('[data-close]') || e.target.closest('#modal-x')) closeModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+}
+
 async function boot() {
-  const res = await fetch('data.json?v=3');
+  const res = await fetch('data.json?v=4');
   DATA = await res.json();
   E.setData(DATA);
 
+  try {
+    const s = await fetch('formula_sources.json?v=4');
+    SOURCES = await s.json();
+  } catch (_) { SOURCES = {}; }
+
   renderChips();
   initPointerGlow();
+  initDelegates();
 
   $('#go').onclick = () => {
     const text = $('#symptoms').value.trim();
@@ -197,6 +356,21 @@ async function boot() {
   $('#symptoms').addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) $('#go').click();
   });
+
+  openFromHash();
+  window.addEventListener('hashchange', openFromHash);
+}
+
+/* 深链：#f=四君子汤 直接打开方剂， #s=脾气虚 直接打开证型（方便分享） */
+function openFromHash() {
+  const raw = decodeURIComponent(location.hash.slice(1));
+  if (!raw) return;
+  if (raw.startsWith('f=')) {
+    const f = (DATA.formulas || []).find(x => x['名'] === raw.slice(2));
+    if (f) openModal(formulaDetailHTML(f));
+  } else if (raw.startsWith('s=')) {
+    openModal(syndromeDetailHTML(raw.slice(2)));
+  }
 }
 
 boot().catch(err => {
