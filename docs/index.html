@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>中医辨证调养助手 · 说人话就能用</title>
+<meta name="description" content="用日常口语描述身体不适，得到可能的证型、辨证依据和可执行的调养建议。41 证型 / 61 首经典方 / 250 例医案 / 21 部典籍，纯前端离线运行。">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+</head>
+<body>
+
+<header class="hero">
+  <h1>🌿 中医辨证调养助手</h1>
+  <p class="sub">用身体感受说话，给你一个可执行的调养方向</p>
+  <p class="meta">41 证型 · 61 首经典方 · 250 例真实医案 · 21 部典籍 · 纯前端运行，不联网</p>
+</header>
+
+<main>
+  <section class="input-card">
+    <label for="symptoms">你的身体感受</label>
+    <textarea id="symptoms" rows="3"
+      placeholder="例：最近总睡不着，白天没劲，大便也不成形"></textarea>
+
+    <div class="examples">
+      <span>试试：</span>
+      <button class="ex" data-text="失眠 多梦 心烦 舌尖红">失眠多梦</button>
+      <button class="ex" data-text="吃不下饭 人也没劲 大便稀">脾虚乏力</button>
+      <button class="ex" data-text="怕冷 没汗 头痛 流清涕">风寒感冒</button>
+      <button class="ex" data-text="情绪不好 爱叹气 两肋胀">肝郁气滞</button>
+    </div>
+
+    <div class="chips">
+      <span class="chips-label">或直接点选：</span>
+      <div id="chips" class="chips-list"></div>
+    </div>
+
+    <button id="go" class="go">开始分析</button>
+  </section>
+
+  <section id="result" class="result" hidden></section>
+</main>
+
+<footer>
+  <p><b>本工具仅用于中医知识学习与养生参考，不构成医疗诊断，不替代专业医师诊疗。</b></p>
+  <p>有胸痛、黑便呕血、突发剧烈头痛、单侧肢体麻木等情况，请直接就医。</p>
+  <p class="tiny">
+    <a href="https://github.com/leropeter/tcm-agent">GitHub 源码</a> ·
+    <a href="EVALUATION.md">评测与局限</a> ·
+    数据：TCMEval-SDT 公开数据集 + 公有领域古籍
+  </p>
+</footer>
+
+<script src="tcm-engine.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

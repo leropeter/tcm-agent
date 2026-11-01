@@ -1,5 +1,7 @@
 # 🌿 TCM Agent — 中医辨证调养助手
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-%E5%9C%A8%E7%BA%BF%E8%AF%95%E7%8E%A9-ff4b4b?style=for-the-badge)](https://tcm-agent.streamlit.app)
+
 [![CI](https://github.com/leropeter/tcm-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/leropeter/tcm-agent/actions/workflows/ci.yml)
 [![tests](https://img.shields.io/badge/tests-276%20passed-brightgreen)](./run_tests.py)
 [![oral-eval](https://img.shields.io/badge/口语评测-72%25%20Top1-blue)](./eval/RESULTS.md)
