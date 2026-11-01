@@ -114,6 +114,7 @@ with st.sidebar:
             "久坐少动", "久用眼", "劳累", "经期/产后", "月经量多", "久咳", "怀孕/哺乳",
         ],
         default=[], key="q_recent",
+        placeholder="点这里多选（可以留空）",
     )
     st.markdown("---")
     _html('<div class="side-note">本工具基于中医证型规则库 + 250 例真实医案 + 21 部典籍，'
@@ -485,6 +486,7 @@ common = st.multiselect(
         "情绪抑郁", "叹气", "身体困重", "舌苔厚腻", "舌红", "舌淡",
     ],
     default=[], key="ui_common",
+    placeholder="点选你有的症状（可多选，也可以直接在上面输入）",
 )
 
 _c1, _c2 = st.columns([1, 2.2])
