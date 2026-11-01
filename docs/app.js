@@ -65,7 +65,7 @@ function render(analysis) {
         <h2>${words} <span class="sx">${esc(top.id)}</span></h2>
         <span class="cat">${esc(top.category)}</span>
       </div>
-      <div class="meter"><i style="width:${Math.min(100, top.score * 7)}%"></i><span>${top.score} 分</span></div>
+      <div class="meter"><i style="width:${Math.min(100, top.score * 7)}%"></i><span data-score="${top.score}">0 分</span></div>
       <p class="note">${esc(a.note)}</p>
       ${a.conflict ? `<p class="conflict">⚠️ ${esc(a.conflict)}</p>` : ''}
       <div class="hits">
@@ -114,7 +114,35 @@ function render(analysis) {
     </div>`;
 
   box.innerHTML = html;
+  playAnimations(box);
   box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* 进场动效：卡片错峰、进度条从 0 展开、分数滚动 */
+function playAnimations(box) {
+  const cards = box.querySelectorAll('.card');
+  cards.forEach((el, i) => { el.style.animationDelay = (i * 75) + 'ms'; });
+
+  const bar = box.querySelector('.meter i');
+  if (bar) {
+    const target = bar.style.width;
+    bar.style.width = '0';
+    requestAnimationFrame(() => requestAnimationFrame(() => { bar.style.width = target; }));
+  }
+
+  const scoreEl = box.querySelector('.meter span[data-score]');
+  if (scoreEl) countUp(scoreEl, Number(scoreEl.dataset.score), 850);
+}
+
+function countUp(el, to, dur) {
+  const t0 = performance.now();
+  const tick = (now) => {
+    const p = Math.min(1, (now - t0) / dur);
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(to * eased) + ' 分';
+    if (p < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
 }
 
 async function boot() {
@@ -126,7 +154,15 @@ async function boot() {
 
   $('#go').onclick = () => {
     const text = $('#symptoms').value.trim();
-    if (!text) { $('#symptoms').focus(); return; }
+    if (!text) {
+      const ta = $('#symptoms');
+      ta.classList.remove('shake');
+      void ta.offsetWidth;
+      ta.classList.add('shake');
+      setTimeout(() => ta.classList.remove('shake'), 500);
+      ta.focus();
+      return;
+    }
     render(E.diagnose(text));
   };
 
