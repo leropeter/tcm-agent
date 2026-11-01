@@ -1,6 +1,8 @@
 # 🌿 TCM Agent — 中医辨证调养助手
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-%E5%9C%A8%E7%BA%BF%E8%AF%95%E7%8E%A9-ff4b4b?style=for-the-badge)](https://tcm-agent.streamlit.app)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-%E5%9C%A8%E7%BA%BF%E8%AF%95%E7%8E%A9-ff4b4b?style=for-the-badge)](https://leropeter.github.io/tcm-agent/)
+
+**👉 在线试玩：<https://leropeter.github.io/tcm-agent/>**（手机也能开，国内直连，不用装任何东西）
 
 [![CI](https://github.com/leropeter/tcm-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/leropeter/tcm-agent/actions/workflows/ci.yml)
 [![tests](https://img.shields.io/badge/tests-276%20passed-brightgreen)](./run_tests.py)
