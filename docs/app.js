@@ -323,7 +323,7 @@ async function boot() {
   E.setData(DATA);
 
   try {
-    const s = await fetch('formula_sources.json?v=5');
+    const s = await fetch('formula_sources_v2.json?v=1');
     SOURCES = await s.json();
   } catch (_) { SOURCES = {}; }
 

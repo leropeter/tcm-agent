@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """extract_formula_sources.py — 从 21 本典籍里抽取每个方剂的原文出处段落。
 
-输出 docs/formula_sources.json：
+输出 docs/formula_sources_v2.json：
     { "桂枝汤": [ {"book": "伤寒论.md", "text": "...", "score": 3}, ... ], ... }
 
 只保留"像方剂条文"的段落：命中方名 + 附近有煎/煮/服/丸/散/剂等字。
@@ -25,25 +25,21 @@ except Exception:
     pass
 
 BOOKS = sorted(glob.glob(os.path.join(ROOT, "data", "books", "*.md")))
-print(f"典籍 {len(BOOKS)} 本")
 
-# 优先顺序：方书 / 经典在前
 PRIORITY = ["伤寒论", "金匮要略", "千金要方", "千金翼方", "肘后备急方",
             "脾胃论", "本草纲目", "黄帝内经", "神农本草经"]
 
-# 这些是医案/养生科普，叙述里会提到方名但不是方剂条文，直接排除
 EXCLUDE_BOOKS = ["邹孟城", "自我调养", "中医养生学", "中医伤科按摩学", "动画图", "中医眼科备读"]
 
 KEY_HINT = re.compile(r"[煎煮服丸散汤剂饮送下]")
 DOSE = re.compile(r"[钱两升合枚铢斤克分盅撮把]")
 MAKE = re.compile(r"煎|煮|为末|炼蜜|研末|杵|炮|咀")
-SONG = re.compile(r"[，。][^，。]{4,7}[，。]")  # 汤头歌诀式短句
-CUT = re.compile(r"\n\s*\n|#{1,3}\s")
+
+OUT_NAME = "formula_sources_v2.json"
 
 
 def clean(t):
-    t = re.sub(r"\s+", " ", t)
-    return t.strip()
+    return re.sub(r"\s+", " ", t).strip()
 
 
 def book_rank(name):
@@ -70,24 +66,21 @@ def load_books():
 
 def main():
     books = load_books()
+    print(f"典籍 {len(books)} 本参与检索（原始 {len(BOOKS)} 本）")
     result = {}
-    total = 0
 
     for f in FORMULAS:
         name = f["名"]
         hits = []
         for bname, text in books:
-            # 优先找 "XX方"（方剂条目标题），没有再退回方名本身
             positions = [m.start() for m in re.finditer(re.escape(name + "方"), text)]
             if not positions:
                 positions = [m.start() for m in re.finditer(re.escape(name), text)]
 
             for pos in positions:
-                # 方名前面紧邻汉字 → 多半是更长方名的一部分（厚朴麻黄汤里含"麻黄汤"）
                 if pos > 0 and "\u4e00" <= text[pos - 1] <= "\u9fff":
                     continue
                 start = max(0, pos - 10)
-                # 回退到最近的句号，避免从半句开始
                 dot = text.rfind("。", max(0, start - 60), start)
                 if dot > 0:
                     start = dot + 1
@@ -95,11 +88,9 @@ def main():
                 seg = clean(text[start:end])
                 if len(seg) < 60:
                     continue
-                # 方名必须出现在段落前部——否则只是"提到"，不是本方的条文
                 idx = seg.find(name)
                 if idx < 0 or idx > 40:
                     continue
-                # 必须是"方剂条文"：有制法词 + 至少 3 处剂量/计量词，且不像韵文歌诀
                 if not MAKE.search(seg):
                     continue
                 if len(DOSE.findall(seg)) < 3:
@@ -113,7 +104,7 @@ def main():
                     "text": seg,
                     "score": hints + bonus + (5 if "主之" in seg else 0),
                 })
-        # 同一本书只留得分最高的一条
+
         best = {}
         for h in hits:
             if h["book"] not in best or h["score"] > best[h["book"]]["score"]:
@@ -123,10 +114,8 @@ def main():
             p.pop("score", None)
             p["text"] = p["text"][:380]
         result[name] = picked
-        if picked:
-            total += 1
 
-    out = os.path.join(ROOT, "docs", "formula_sources.json")
+    out = os.path.join(ROOT, "docs", OUT_NAME)
     with open(out, "w", encoding="utf-8") as fp:
         json.dump(result, fp, ensure_ascii=False, separators=(",", ":"))
 
