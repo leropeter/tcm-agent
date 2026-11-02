@@ -4,29 +4,32 @@
    ============================================================ */
 
 :root {
-  --paper: #f4efe3;
-  --paper-2: #faf6ec;
-  --card: #fffdf6;
-  --ink: #1b1a15;
-  --ink-2: #3d3a30;
-  --ink-3: #6b6555;
-  --muted: #8d8574;
-  --line: #ddd3bd;
-  --line-2: #ebe3d1;
+  --paper: #ece0c8;
+  --paper-2: #f3e9d5;
+  --card: #fbf5e6;
+  --ink: #241f16;
+  --ink-2: #453c2c;
+  --ink-3: #6e6249;
+  --muted: #8f8266;
+  --line: #d9c9a8;
+  --line-2: #e6d9bd;
 
   --cinnabar: #a8322a;
   --cinnabar-2: #c2453a;
-  --cinnabar-soft: #f7e7e2;
+  --cinnabar-soft: #f6e2db;
   --bamboo: #4f7059;
-  --bamboo-soft: #e7efe6;
+  --bamboo-soft: #e4ead9;
   --gold: #b08d4f;
+  --wolfberry: #b8382c;
+  --tangerine: #cf7f36;
+  --reed: #c9b48a;
 
   --serif: "Source Han Serif SC", "Noto Serif CJK SC", "Noto Serif SC", "Songti SC", "STSong", "SimSun", "Georgia", serif;
   --sans: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Noto Sans CJK SC", system-ui, -apple-system, sans-serif;
 
-  --r: 4px;
+  --r: 3px;
   --ease: cubic-bezier(.22, .8, .3, 1);
-  --shadow: 0 1px 0 rgba(255, 255, 255, .8) inset, 0 10px 30px -12px rgba(60, 48, 28, .22);
+  --shadow: 0 1px 0 rgba(255, 255, 255, .55) inset, 0 8px 22px -12px rgba(74, 56, 26, .35);
 }
 
 * { box-sizing: border-box; }
@@ -45,21 +48,32 @@ body {
   position: relative;
 }
 
-/* 宣纸颗粒 + 墨晕 */
+/* 百子柜：中药铺的药斗格，每格一个小铜环拉手 */
 .bg-grid {
   position: fixed;
   inset: 0;
   z-index: -2;
   pointer-events: none;
   background-image:
-    radial-gradient(ellipse 60% 45% at 18% 8%, rgba(168, 50, 42, .07), transparent 62%),
-    radial-gradient(ellipse 55% 50% at 88% 22%, rgba(79, 112, 89, .09), transparent 60%),
-    radial-gradient(ellipse 70% 45% at 50% 105%, rgba(176, 141, 79, .10), transparent 65%);
-  animation: inkDrift 26s ease-in-out infinite alternate;
+    radial-gradient(circle 2.6px at 34px 52px, rgba(140, 112, 62, .30), transparent 3px),
+    linear-gradient(to right, rgba(150, 122, 70, .16) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(150, 122, 70, .16) 1px, transparent 1px);
+  background-size: 68px 68px, 68px 68px, 68px 68px;
+  background-position: 0 0, 0 0, 0 0;
+  -webkit-mask-image: radial-gradient(ellipse 92% 78% at 50% 34%, #000 18%, transparent 82%);
+  mask-image: radial-gradient(ellipse 92% 78% at 50% 34%, #000 18%, transparent 82%);
+  opacity: .85;
 }
-@keyframes inkDrift {
-  from { transform: scale(1) translate3d(0, 0, 0); }
-  to   { transform: scale(1.08) translate3d(-1.5%, 1.5%, 0); }
+/* 柜身受光：上暖下暗 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(255, 240, 205, .55), transparent 62%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(120, 88, 40, .16), transparent 70%);
 }
 
 /* 纸纹噪点 */
@@ -143,6 +157,25 @@ body::after {
   font-size: 15px;
   color: var(--cinnabar);
   font-weight: 700;
+}
+
+/* 药材线描装饰 */
+.herb {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+.herb-l {
+  left: max(8px, calc(50% - 420px));
+  top: 34px;
+  width: 96px;
+  opacity: .5;
+}
+.herb-r {
+  right: max(8px, calc(50% - 430px));
+  top: 22px;
+  width: 112px;
+  opacity: .45;
 }
 
 /* 朱砂印章 */
@@ -371,7 +404,13 @@ textarea:focus {
   border-color: #e2d8c2;
   padding: 28px 26px 22px;
 }
-.card.main::before { display: none; }
+.card.main::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--cinnabar) 0%, rgba(168, 50, 42, .35) 42%, transparent 78%);
+}
 .card.main::after {
   content: "";
   position: absolute;
