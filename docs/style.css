@@ -25,6 +25,7 @@
   --reed: #c9b48a;
 
   --serif: "Source Han Serif SC", "Noto Serif CJK SC", "Noto Serif SC", "Songti SC", "STSong", "SimSun", "Georgia", serif;
+  --heavy: "Source Han Sans SC", "Noto Sans CJK SC", "Microsoft YaHei", "PingFang SC", "Heiti SC", "SimHei", sans-serif;
   --sans: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Noto Sans CJK SC", system-ui, -apple-system, sans-serif;
 
   --r: 3px;
@@ -114,9 +115,9 @@ body::after {
 
 .hero h1 {
   margin: 0 0 14px;
-  font-family: var(--serif);
-  font-size: clamp(36px, 7.4vw, 64px);
-  font-weight: 400;
+  font-family: var(--heavy);
+  font-size: clamp(31px, 6.2vw, 54px);
+  font-weight: 700;
   letter-spacing: .18em;
   line-height: 1.2;
   color: var(--ink);
@@ -432,9 +433,9 @@ textarea:focus {
 }
 .verdict-head h2 { margin: 0; font-size: 19px; letter-spacing: .04em; color: var(--ink-3); }
 .sx {
-  font-family: var(--serif);
-  font-size: clamp(32px, 6.4vw, 44px);
-  font-weight: 400;
+  font-family: var(--heavy);
+  font-size: clamp(28px, 5.6vw, 38px);
+  font-weight: 700;
   letter-spacing: .1em;
   color: var(--ink);
   animation: inkDrop .8s var(--ease) .12s both;
