@@ -4,6 +4,7 @@
 const E = window.TCMEngine;
 let DATA = null;
 let SOURCES = {};
+let TEXTBOOK = {};
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -78,18 +79,36 @@ function closeModal() {
 
 function formulaDetailHTML(f) {
   const src = SOURCES[f['名']] || [];
+  const tb = TEXTBOOK[f['名']] || null;
   const prep = prepMethod(f['名']);
+  const origin = (tb && tb['出处']) || f['出处'] || '出处未载';
 
   let html = `
     <div class="md-head">
       <h2>${esc(f['名'])}</h2>
-      <div class="md-src">${esc(f['出处'] || '出处未载')}</div>
+      <div class="md-src">${esc(origin)}</div>
     </div>`;
 
-  if (f['功用']) html += `<p class="md-row"><b>功用</b>${esc(f['功用'])}</p>`;
-  if (f['主治']) html += `<p class="md-row"><b>主治</b>${esc(f['主治'])}</p>`;
-  if (f['组成']) html += `<p class="md-row"><b>组成</b>${esc(f['组成'])}</p>`;
+  if (tb) {
+    // 教材原文（含剂量、用法）
+    const rows = [
+      ['组成', tb['组成']],
+      ['用法', tb['用法']],
+      ['功用', tb['功用']],
+      ['主治', tb['主治']],
+    ].filter(r => r[1]);
+    for (const [k, v] of rows) {
+      html += `<p class="md-row"><b>${k}</b>${esc(v)}</p>`;
+    }
+    html += `<p class="md-tip">以上字段摘自《方剂学》（全国中医药行业高等教育“十三五”规划教材，李冀、连建伟主编）该方条目。
+      其中剂量为教材所列<b>成人常规参考量</b>，不可自行照抓。</p>`;
+  } else {
+    if (f['功用']) html += `<p class="md-row"><b>功用</b>${esc(f['功用'])}</p>`;
+    if (f['主治']) html += `<p class="md-row"><b>主治</b>${esc(f['主治'])}</p>`;
+    if (f['组成']) html += `<p class="md-row"><b>组成</b>${esc(f['组成'])}</p>`;
+  }
 
+  // 通用煎服流程（教材没写现代用法时兜底，写了也作为操作补充）
   html += `<div class="md-block">
       <h3>怎么做（${prep.kind}通用法）</h3>
       <ol class="md-steps">${prep.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
@@ -109,7 +128,7 @@ function formulaDetailHTML(f) {
     html += `<div class="md-block md-warn"><h3>注意</h3><p>${esc(f['注意'])}</p></div>`;
   }
 
-  html += `<p class="md-foot">本页只给组成与通用制法，<b>不给剂量</b>——剂量错一点就是事故，请由医师按你的体质和病情定。</p>`;
+  html += `<p class="md-foot">剂量错一点就是事故。<b>本站不提供用药建议</b>，只做知识整理——真要吃药，请医师辨证后开方。</p>`;
   return html;
 }
 
@@ -339,6 +358,11 @@ async function boot() {
     const s = await fetch('formula_sources_v2.json?v=2');
     SOURCES = await s.json();
   } catch (_) { SOURCES = {}; }
+
+  try {
+    const t = await fetch('formula_textbook.json?v=1');
+    TEXTBOOK = await t.json();
+  } catch (_) { TEXTBOOK = {}; }
 
   renderChips();
   initPointerGlow();

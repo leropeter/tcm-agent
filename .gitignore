@@ -32,3 +32,6 @@ models/
 *.db
 *.sqlite
 *.parquet
+
+# 第三方教材 PDF（有版权，不随仓库分发；解析结果见 docs/formula_textbook.json）
+data/*.pdf
