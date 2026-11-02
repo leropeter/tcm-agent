@@ -205,9 +205,11 @@ function render(analysis) {
   const src = top.src || {};
   const others = results.slice(1, 5);
   const words = { '较高': '最可能', '中等': '可能是', '较低': '暂偏向' }[a.level] || '可能是';
+  const fs = formulasFor(top.id);
 
   let html = `
     <div class="card main">
+      <div class="judged-seal" aria-hidden="true">已辨</div>
       <div class="verdict-head">
         <span class="badge ${LEVEL_CLASS[a.level]}">把握${a.level}</span>
         <h2>${words} <span class="sx">${esc(top.id)}</span></h2>
@@ -221,6 +223,9 @@ function render(analysis) {
         ${top.hits.map(h => `<span class="tag">${esc(h)}</span>`).join('')}
       </div>
       <p class="evidence"><b>辨证依据：</b>${esc(src.evidence || '')}</p>
+      ${fs.length ? `<button class="rx-btn" data-fname="${esc(fs[0]['名'])}">
+        <span class="rx-ico">⚖</span> 看抓药方案 · ${fs.length} 首 <i>›</i>
+      </button>` : ''}
     </div>`;
 
   const adv = src.advice || {};
@@ -232,10 +237,10 @@ function render(analysis) {
     html += `</dl></div>`;
   }
 
-  const fs = formulasFor(top.id);
-  if (fs.length) {
+  const fs2 = formulasFor(top.id);
+  if (fs2.length) {
     html += `<div class="card"><h3>参考方剂<span class="sub2">点开看组成、做法、典籍原文</span></h3>`;
-    for (const f of fs) {
+    for (const f of fs2) {
       html += `<button class="formula" data-fname="${esc(f['名'])}">
         <div class="f-head"><b>${esc(f['名'])}</b><span class="f-src">${esc(f['出处'] || '')}</span>
           <span class="f-go">点击展开 ›</span></div>
