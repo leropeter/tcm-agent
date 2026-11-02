@@ -209,7 +209,6 @@ function render(analysis) {
   let html = `
     <div class="card main">
       <div class="verdict-head">
-        <span class="sx-icon" aria-hidden="true">${esc(src.image || '🌿')}</span>
         <span class="badge ${LEVEL_CLASS[a.level]}">把握${a.level}</span>
         <h2>${words} <span class="sx">${esc(top.id)}</span></h2>
         <span class="cat">${esc(top.category)}</span>
